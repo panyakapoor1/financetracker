@@ -1,0 +1,467 @@
+# Deployment Guide
+
+This guide covers deploying the Finance Tracker application to various cloud platforms.
+
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Backend Deployment](#backend-deployment)
+   - [Render](#deploy-backend-to-render)
+   - [Railway](#deploy-backend-to-railway)
+   - [Heroku](#deploy-backend-to-heroku)
+3. [Frontend Deployment](#frontend-deployment)
+   - [Vercel](#deploy-frontend-to-vercel)
+   - [Netlify](#deploy-frontend-to-netlify)
+4. [MongoDB Atlas Setup](#mongodb-atlas-setup)
+5. [Environment Variables](#environment-variables)
+6. [Post-Deployment](#post-deployment)
+
+---
+
+## Prerequisites
+
+- Git repository with your code
+- MongoDB Atlas account
+- Accounts on deployment platforms (Render, Vercel, etc.)
+- Domain name (optional)
+
+---
+
+## MongoDB Atlas Setup
+
+### 1. Create a Cluster
+
+1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Sign up or log in
+3. Create a new cluster (free M0 tier available)
+4. Choose a cloud provider and region
+5. Wait for cluster creation (2-5 minutes)
+
+### 2. Configure Database Access
+
+1. Go to **Database Access**
+2. Add a new database user
+3. Choose **Password** authentication
+4. Set username and password (save these securely)
+5. Set user privileges to **Atlas Admin** or **Read and write to any database**
+
+### 3. Configure Network Access
+
+1. Go to **Network Access**
+2. Click **Add IP Address**
+3. Choose **Allow Access from Anywhere** (`0.0.0.0/0`)
+   - For production, restrict to specific IPs
+4. Confirm
+
+### 4. Get Connection String
+
+1. Go to your cluster
+2. Click **Connect**
+3. Choose **Connect your application**
+4. Copy the connection string
+5. Replace `<password>` with your database user password
+6. Replace `<dbname>` with your database name (e.g., `financetracker`)
+
+Example:
+```
+mongodb+srv://username:password@cluster.mongodb.net/financetracker?retryWrites=true&w=majority
+```
+
+---
+
+## Backend Deployment
+
+### Deploy Backend to Render
+
+#### 1. Prepare Your Repository
+
+Ensure `package.json` has the correct start script:
+```json
+{
+  "scripts": {
+    "start": "node server.js"
+  }
+}
+```
+
+#### 2. Create Web Service
+
+1. Go to [Render Dashboard](https://dashboard.render.com/)
+2. Click **New** → **Web Service**
+3. Connect your GitHub/GitLab repository
+4. Configure:
+   - **Name**: `finance-tracker-api`
+   - **Root Directory**: `backend`
+   - **Environment**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Plan**: Free
+
+#### 3. Add Environment Variables
+
+In the Render dashboard, add:
+
+```env
+NODE_ENV=production
+PORT=5000
+MONGODB_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=your_super_secret_jwt_key_min_32_characters
+JWT_REFRESH_SECRET=your_super_secret_refresh_key_min_32_characters
+JWT_EXPIRE=15m
+JWT_REFRESH_EXPIRE=7d
+FRONTEND_URL=your_frontend_url
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+```
+
+#### 4. Deploy
+
+1. Click **Create Web Service**
+2. Wait for deployment (2-5 minutes)
+3. Your API will be available at: `https://finance-tracker-api.onrender.com`
+
+---
+
+### Deploy Backend to Railway
+
+#### 1. Install Railway CLI (Optional)
+
+```bash
+npm install -g @railway/cli
+railway login
+```
+
+#### 2. Deploy via Dashboard
+
+1. Go to [Railway](https://railway.app/)
+2. Click **New Project**
+3. Select **Deploy from GitHub repo**
+4. Choose your repository
+5. Configure:
+   - **Root Directory**: `/backend`
+   - **Start Command**: `npm start`
+
+#### 3. Add Environment Variables
+
+Add the same environment variables as Render.
+
+#### 4. Generate Domain
+
+1. Go to **Settings**
+2. Click **Generate Domain**
+3. Your API is available at the generated URL
+
+---
+
+### Deploy Backend to Heroku
+
+#### 1. Install Heroku CLI
+
+```bash
+npm install -g heroku
+heroku login
+```
+
+#### 2. Create Heroku App
+
+```bash
+cd backend
+heroku create finance-tracker-api
+```
+
+#### 3. Set Environment Variables
+
+```bash
+heroku config:set NODE_ENV=production
+heroku config:set MONGODB_URI=your_mongodb_uri
+heroku config:set JWT_SECRET=your_jwt_secret
+heroku config:set JWT_REFRESH_SECRET=your_refresh_secret
+heroku config:set FRONTEND_URL=your_frontend_url
+```
+
+#### 4. Create Procfile
+
+Create `backend/Procfile`:
+```
+web: node server.js
+```
+
+#### 5. Deploy
+
+```bash
+git add .
+git commit -m "Prepare for Heroku deployment"
+git push heroku main
+```
+
+---
+
+## Frontend Deployment
+
+### Deploy Frontend to Vercel
+
+#### 1. Install Vercel CLI (Optional)
+
+```bash
+npm install -g vercel
+```
+
+#### 2. Deploy via Dashboard
+
+1. Go to [Vercel](https://vercel.com/)
+2. Click **Import Project**
+3. Import from Git
+4. Configure:
+   - **Framework Preset**: Create React App
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `build`
+
+#### 3. Add Environment Variables
+
+Add in Vercel dashboard:
+
+```env
+REACT_APP_API_URL=https://your-backend-url.onrender.com/api
+```
+
+#### 4. Deploy
+
+1. Click **Deploy**
+2. Your app will be available at: `https://your-app.vercel.app`
+
+#### 5. Custom Domain (Optional)
+
+1. Go to **Settings** → **Domains**
+2. Add your custom domain
+3. Follow DNS configuration instructions
+
+---
+
+### Deploy Frontend to Netlify
+
+#### 1. Deploy via Dashboard
+
+1. Go to [Netlify](https://netlify.com/)
+2. Click **Add new site** → **Import an existing project**
+3. Connect to Git provider
+4. Configure:
+   - **Base directory**: `frontend`
+   - **Build command**: `npm run build`
+   - **Publish directory**: `frontend/build`
+
+#### 2. Add Environment Variables
+
+Go to **Site settings** → **Build & deploy** → **Environment**:
+
+```env
+REACT_APP_API_URL=https://your-backend-url.onrender.com/api
+```
+
+#### 3. Deploy
+
+Click **Deploy site** and wait for build to complete.
+
+---
+
+## Environment Variables
+
+### Backend Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NODE_ENV` | Environment mode | `production` |
+| `PORT` | Server port | `5000` |
+| `MONGODB_URI` | MongoDB connection string | `mongodb+srv://...` |
+| `JWT_SECRET` | JWT signing secret | `your-secret-key-min-32-chars` |
+| `JWT_REFRESH_SECRET` | Refresh token secret | `your-refresh-secret-min-32-chars` |
+| `JWT_EXPIRE` | Access token expiry | `15m` |
+| `JWT_REFRESH_EXPIRE` | Refresh token expiry | `7d` |
+| `FRONTEND_URL` | Frontend URL for CORS | `https://your-app.vercel.app` |
+
+### Frontend Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `REACT_APP_API_URL` | Backend API URL | `https://api.example.com/api` |
+
+---
+
+## Post-Deployment
+
+### 1. Test the Application
+
+1. Open your frontend URL
+2. Register a new account
+3. Test all features:
+   - Login/Logout
+   - Create transactions
+   - Set budgets
+   - View dashboard
+   - Generate reports
+
+### 2. Monitor Performance
+
+#### Backend Monitoring (Render)
+- Check logs in Render dashboard
+- Monitor response times
+- Watch for errors
+
+#### Frontend Monitoring (Vercel)
+- Check build logs
+- Monitor bundle size
+- Check Core Web Vitals
+
+### 3. Set Up Custom Domain (Optional)
+
+#### For Backend (Render)
+1. Go to **Settings** → **Custom Domain**
+2. Add your domain (e.g., `api.yourapp.com`)
+3. Update DNS records:
+   ```
+   Type: CNAME
+   Name: api
+   Value: finance-tracker-api.onrender.com
+   ```
+
+#### For Frontend (Vercel)
+1. Go to **Settings** → **Domains**
+2. Add your domain (e.g., `yourapp.com`)
+3. Follow DNS configuration
+
+### 4. Enable HTTPS
+
+Both Render and Vercel provide automatic SSL certificates via Let's Encrypt.
+
+### 5. Set Up CI/CD
+
+Both platforms automatically deploy on git push:
+
+```bash
+git add .
+git commit -m "Update feature"
+git push origin main
+```
+
+### 6. Database Backups
+
+#### MongoDB Atlas Backups
+1. Go to **Backup** tab in Atlas
+2. Enable **Cloud Backup**
+3. Configure backup schedule
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### 1. CORS Errors
+
+**Problem**: Frontend can't connect to backend
+
+**Solution**: Ensure `FRONTEND_URL` environment variable is set correctly in backend
+
+#### 2. Build Failures
+
+**Problem**: Deployment build fails
+
+**Solution**:
+- Check Node.js version compatibility
+- Verify all dependencies are in `package.json`
+- Check build logs for specific errors
+
+#### 3. MongoDB Connection Errors
+
+**Problem**: Can't connect to MongoDB Atlas
+
+**Solution**:
+- Verify connection string is correct
+- Check IP whitelist (0.0.0.0/0 for all IPs)
+- Ensure database user has correct permissions
+
+#### 4. Environment Variables Not Working
+
+**Problem**: App can't read environment variables
+
+**Solution**:
+- Restart the service after adding variables
+- Check variable names match exactly
+- For frontend, ensure variables start with `REACT_APP_`
+
+#### 5. 502/503 Errors
+
+**Problem**: Backend is down or unreachable
+
+**Solution**:
+- Check backend logs
+- Verify backend is deployed and running
+- Check if free tier has usage limits
+
+---
+
+## Performance Optimization
+
+### Backend
+- Enable response compression
+- Implement Redis caching (optional)
+- Optimize database queries
+- Use indexes on MongoDB
+
+### Frontend
+- Code splitting
+- Lazy loading routes
+- Image optimization
+- Enable CDN
+
+---
+
+## Security Checklist
+
+- ✅ HTTPS enabled
+- ✅ Environment variables secured
+- ✅ CORS configured properly
+- ✅ Rate limiting enabled
+- ✅ MongoDB network restricted
+- ✅ Strong JWT secrets
+- ✅ Password hashing enabled
+- ✅ Input validation implemented
+- ✅ No sensitive data in logs
+- ✅ Regular dependency updates
+
+---
+
+## Cost Estimation
+
+### Free Tier Limits
+
+**Render (Free)**
+- 750 hours/month
+- 512 MB RAM
+- Sleeps after 15 minutes of inactivity
+
+**Vercel (Free)**
+- Unlimited deployments
+- 100 GB bandwidth/month
+- Serverless function execution
+
+**MongoDB Atlas (Free - M0)**
+- 512 MB storage
+- Shared RAM
+- No backup
+
+**Upgrade Considerations**:
+- Traffic > 10,000 requests/day
+- Need 24/7 uptime
+- Require automated backups
+- Need more storage
+
+---
+
+## Support
+
+For deployment issues:
+- Render: https://render.com/docs
+- Vercel: https://vercel.com/docs
+- MongoDB Atlas: https://docs.atlas.mongodb.com
+- Railway: https://docs.railway.app
