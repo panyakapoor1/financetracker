@@ -101,7 +101,7 @@ const Dashboard: React.FC = () => {
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-yellow-800 mb-2">Budget Alerts</h3>
               <div className="space-y-2">
-                {summary.budgetAlerts.map((budget) => (
+                {summary.budgetAlerts.map((budget: any) => (
                   <div key={budget._id} className="flex items-center justify-between">
                     <span className="text-sm text-yellow-700">
                       {budget.categoryId.name}: {budget.percentageUsed}% used
@@ -122,7 +122,7 @@ const Dashboard: React.FC = () => {
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Transactions</h3>
         {summary.recentTransactions && summary.recentTransactions.length > 0 ? (
           <div className="space-y-3">
-            {summary.recentTransactions.map((transaction) => (
+            {summary.recentTransactions.map((transaction: any) => (
               <div
                 key={transaction._id}
                 className="flex items-center justify-between py-3 border-b last:border-0"

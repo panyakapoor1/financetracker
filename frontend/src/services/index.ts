@@ -110,7 +110,7 @@ export const reportService = {
       params,
       responseType: 'blob',
     });
-    return response.data;
+    return response.data as Blob;
   },
 
   async getSummary(params?: {
@@ -118,13 +118,13 @@ export const reportService = {
     endDate?: string;
   }): Promise<ApiResponse<any>> {
     const response = await apiClient.get('/reports/summary', { params });
-    return response.data;
+    return response.data as any;
   },
 
   async getIncomeExpenseReport(year?: number): Promise<ApiResponse<any>> {
     const response = await apiClient.get('/reports/income-expense', {
       params: { year },
     });
-    return response.data;
+    return response.data as any;
   },
 };

@@ -150,7 +150,7 @@ export interface ApiResponse<T> {
 export interface PaginatedResponse<T> {
   status: 'success';
   data: {
-    [key: string]: T[];
+    transactions: T[];
     pagination: {
       page: number;
       limit: number;

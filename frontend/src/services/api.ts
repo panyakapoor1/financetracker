@@ -1,10 +1,10 @@
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 // Create axios instance
-const apiClient: AxiosInstance = axios.create({
+const apiClient = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -13,22 +13,22 @@ const apiClient: AxiosInstance = axios.create({
 
 // Request interceptor - Add token to requests
 apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  (config: any) => {
     const token = localStorage.getItem('accessToken');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
+  (error: any) => {
     return Promise.reject(error);
   }
 );
 
 // Response interceptor - Handle token refresh
 apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
+  (response: any) => response,
+  async (error: any) => {
     const originalRequest = error.config;
 
     // If error is 401 and we haven't tried to refresh yet
@@ -42,7 +42,7 @@ apiClient.interceptors.response.use(
         }
 
         // Try to refresh the token
-        const response = await axios.post(`${API_URL}/auth/refresh`, {
+        const response = await axios.post<{ status: string; data: { accessToken: string } }>(`${API_URL}/auth/refresh`, {
           refreshToken,
         });
 

@@ -68,6 +68,6 @@ export const transactionService = {
     }>
   > {
     const response = await apiClient.get('/transactions/stats/summary', { params });
-    return response.data;
+    return response.data as any;
   },
 };
