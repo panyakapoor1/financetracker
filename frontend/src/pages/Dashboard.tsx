@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TrendingUp, TrendingDown, Wallet, AlertCircle } from 'lucide-react';
-import { dashboardService } from '../../services';
-import { DashboardSummary as DashboardSummaryType } from '../../types';
+import { dashboardService } from '../services';
+import { DashboardSummary as DashboardSummaryType } from '../types';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 
@@ -16,7 +16,7 @@ const Dashboard: React.FC = () => {
   const fetchSummary = async () => {
     try {
       const response = await dashboardService.getSummary();
-      setSummary(response.data);
+      setSummary(response.data || null);
     } catch (error) {
       toast.error('Failed to load dashboard data');
     } finally {
