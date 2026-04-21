@@ -24,6 +24,9 @@ const errorHandler = require('./src/middleware/errorHandler');
 
 const app = express();
 
+// Trust proxy for Render/Heroku (required for rate limiting)
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 
