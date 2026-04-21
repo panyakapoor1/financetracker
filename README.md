@@ -14,6 +14,7 @@ A full-stack personal finance tracking application built with the MERN stack (Mo
 ### Advanced
 - **Recurring Transactions** — Automate tracking of regular bills and income (rent, subscriptions, salary). Set frequency (daily/weekly/monthly/yearly), pause/resume at any time.
 - **Savings Goals** — Set financial targets (emergency fund, vacation, new car) with custom icons, colors, deadlines, and a deposit/withdraw system to track progress.
+- **Achievements** — Gamified experience with unlockable badges (e.g., "100 Club", "Budget Master") based on your financial milestones and habits.
 - **Transaction Search & Filters** — Instantly search transactions by category name, description, or amount. Filter by type (income/expense) and category.
 
 ### Security
@@ -140,6 +141,12 @@ npm start          # starts on http://localhost:3000
 | DELETE | `/api/savings/:id` | Delete a goal |
 | POST | `/api/savings/:id/fund` | Deposit or withdraw funds |
 
+### Achievements
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/achievements` | List all badges and their status |
+| POST | `/api/achievements/evaluate` | Trigger recalculation of unlocked badges |
+
 ### Dashboard & Reports
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -165,7 +172,7 @@ financetracker/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/         # Layout, PrivateRoute
-│   │   ├── pages/              # Dashboard, Transactions, Budgets, Reports, Recurring, SavingsGoals
+│   │   ├── pages/              # Dashboard, Transactions, Budgets, Reports, Recurring, SavingsGoals, Achievements, Calendar
 │   │   ├── services/           # API client and service modules
 │   │   ├── store/              # Redux store and slices
 │   │   └── types/              # TypeScript interfaces
