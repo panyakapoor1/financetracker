@@ -53,6 +53,7 @@ jobs:
       - name: Build Frontend
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          CI: false
         run: |
           cd frontend
           npm run build
