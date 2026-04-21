@@ -333,9 +333,25 @@ Click **Deploy site** and wait for build to complete.
 
 Both Render and Vercel provide automatic SSL certificates via Let's Encrypt.
 
-### 5. Set Up CI/CD
+### 5. Set Up CI/CD via GitHub Actions
 
-Both platforms automatically deploy on git push:
+This project includes a pre-configured GitHub Actions workflow for automated deployment.
+
+#### 1. Configure GitHub Secrets
+Go to your GitHub repository **Settings > Secrets and variables > Actions** and add:
+
+- `REACT_APP_API_URL`: Your backend API URL (e.g., `https://api.yourapp.com/api`)
+- `RENDER_DEPLOY_HOOK`: (Optional) Your Render Deploy Hook URL to trigger backend updates automatically.
+
+#### 2. Enable GitHub Pages
+1. Go to **Settings > Pages**.
+2. Under **Build and deployment > Source**, select **GitHub Actions**.
+
+#### 3. Automatic Deployment
+Every time you push to the `main` branch, GitHub Actions will:
+1. Build your frontend.
+2. Deploy the static site to **GitHub Pages**.
+3. Trigger your backend host to redeploy (if hook is provided).
 
 ```bash
 git add .
