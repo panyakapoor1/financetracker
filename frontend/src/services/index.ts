@@ -128,3 +128,79 @@ export const reportService = {
     return response.data as any;
   },
 };
+
+export const recurringService = {
+  async getAll(): Promise<ApiResponse<{ recurringTransactions: any[] }>> {
+    const response = await apiClient.get<ApiResponse<{ recurringTransactions: any[] }>>('/recurring');
+    return response.data;
+  },
+
+  async create(data: {
+    amount: number;
+    type: 'income' | 'expense';
+    categoryId: string;
+    description?: string;
+    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+    nextDate: string;
+  }): Promise<ApiResponse<any>> {
+    const response = await apiClient.post('/recurring', data);
+    return response.data as any;
+  },
+
+  async update(id: string, data: any): Promise<ApiResponse<any>> {
+    const response = await apiClient.put(`/recurring/${id}`, data);
+    return response.data as any;
+  },
+
+  async delete(id: string): Promise<ApiResponse<null>> {
+    const response = await apiClient.delete<ApiResponse<null>>(`/recurring/${id}`);
+    return response.data;
+  },
+};
+
+export const savingsService = {
+  async getGoals(): Promise<ApiResponse<{ goals: any[] }>> {
+    const response = await apiClient.get<ApiResponse<{ goals: any[] }>>('/savings');
+    return response.data;
+  },
+
+  async createGoal(data: {
+    name: string;
+    targetAmount: number;
+    currentAmount?: number;
+    deadline?: string;
+    icon?: string;
+    color?: string;
+  }): Promise<ApiResponse<any>> {
+    const response = await apiClient.post('/savings', data);
+    return response.data as any;
+  },
+
+  async updateGoal(id: string, data: any): Promise<ApiResponse<any>> {
+    const response = await apiClient.put(`/savings/${id}`, data);
+    return response.data as any;
+  },
+
+  async deleteGoal(id: string): Promise<ApiResponse<null>> {
+    const response = await apiClient.delete<ApiResponse<null>>(`/savings/${id}`);
+    return response.data;
+  },
+
+  async fundGoal(id: string, amount: number): Promise<ApiResponse<any>> {
+    const response = await apiClient.post(`/savings/${id}/fund`, { amount });
+    return response.data as any;
+  },
+};
+
+export const achievementService = {
+  async getAchievements(): Promise<ApiResponse<{ achievements: any[] }>> {
+    const response = await apiClient.get<ApiResponse<{ achievements: any[] }>>('/achievements');
+    return response.data;
+  },
+
+  async evaluateAchievements(): Promise<ApiResponse<{ newUnlocks: any[] }>> {
+    const response = await apiClient.post('/achievements/evaluate');
+    return response.data as any;
+  }
+};
+

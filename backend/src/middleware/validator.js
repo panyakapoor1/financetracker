@@ -32,7 +32,7 @@ const validate = (schema) => {
  * Validation schemas
  */
 const schemas = {
-  // Auth schemas
+
   register: Joi.object({
     name: Joi.string().min(2).max(50).required(),
     email: Joi.string().email().required(),
@@ -44,7 +44,7 @@ const schemas = {
     password: Joi.string().required()
   }),
 
-  // Transaction schemas
+
   createTransaction: Joi.object({
     amount: Joi.number().positive().required(),
     type: Joi.string().valid('income', 'expense').required(),
@@ -61,7 +61,7 @@ const schemas = {
     description: Joi.string().max(500).optional().allow('')
   }).min(1),
 
-  // Category schemas
+
   createCategory: Joi.object({
     name: Joi.string().max(50).required(),
     type: Joi.string().valid('income', 'expense').required(),
@@ -75,7 +75,7 @@ const schemas = {
     color: Joi.string().pattern(/^#[0-9A-Fa-f]{6}$/).optional()
   }).min(1),
 
-  // Budget schemas
+
   createBudget: Joi.object({
     categoryId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).required(),
     month: Joi.string().pattern(/^\d{4}-\d{2}$/).required(),

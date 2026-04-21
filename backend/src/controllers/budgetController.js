@@ -43,7 +43,7 @@ const getBudget = asyncHandler(async (req, res) => {
     throw new Error('Budget not found');
   }
 
-  // Check ownership
+
   if (budget.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
     res.status(403);
     throw new Error('Not authorized to access this budget');
@@ -65,14 +65,14 @@ const getBudget = asyncHandler(async (req, res) => {
 const createBudget = asyncHandler(async (req, res) => {
   const { categoryId, month, limit } = req.body;
 
-  // Verify category exists and is expense type
+
   const category = await Category.findById(categoryId);
   if (!category) {
     res.status(404);
     throw new Error('Category not found');
   }
 
-  // Check category access
+
   if (category.userId && category.userId.toString() !== req.user._id.toString()) {
     res.status(403);
     throw new Error('Not authorized to use this category');
@@ -83,7 +83,7 @@ const createBudget = asyncHandler(async (req, res) => {
     throw new Error('Budgets can only be created for expense categories');
   }
 
-  // Check if budget already exists for this category and month
+
   const existingBudget = await Budget.findOne({
     userId: req.user._id,
     categoryId,
@@ -95,7 +95,7 @@ const createBudget = asyncHandler(async (req, res) => {
     throw new Error('Budget already exists for this category and month');
   }
 
-  // Calculate current spent amount for the month
+  // TODO: Double check timezones for month bounding. This might be slightly off for users at the end of the month.
   const [year, monthNum] = month.split('-');
   const startDate = new Date(year, parseInt(monthNum) - 1, 1);
   const endDate = new Date(year, parseInt(monthNum), 0, 23, 59, 59);
@@ -155,7 +155,7 @@ const updateBudget = asyncHandler(async (req, res) => {
     throw new Error('Budget not found');
   }
 
-  // Check ownership
+
   if (budget.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
     res.status(403);
     throw new Error('Not authorized to update this budget');
@@ -191,7 +191,7 @@ const deleteBudget = asyncHandler(async (req, res) => {
     throw new Error('Budget not found');
   }
 
-  // Check ownership
+
   if (budget.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
     res.status(403);
     throw new Error('Not authorized to delete this budget');

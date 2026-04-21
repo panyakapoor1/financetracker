@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const transactionSchema = new mongoose.Schema({
+const recurringTransactionSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -15,42 +15,35 @@ const transactionSchema = new mongoose.Schema({
   type: {
     type: String,
     required: [true, 'Transaction type is required'],
-    enum: {
-      values: ['income', 'expense'],
-      message: 'Type must be either income or expense'
-    }
+    enum: ['income', 'expense']
   },
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
     required: [true, 'Category is required']
   },
-  date: {
-    type: Date,
-    required: [true, 'Date is required'],
-    default: Date.now
-  },
   description: {
     type: String,
     trim: true,
     maxlength: [500, 'Description cannot exceed 500 characters']
   },
-  createdAt: {
+  frequency: {
+    type: String,
+    required: [true, 'Frequency is required'],
+    enum: ['daily', 'weekly', 'monthly', 'yearly']
+  },
+  nextDate: {
     type: Date,
-    default: Date.now
+    required: [true, 'Next date is required']
+  },
+  isActive: {
+    type: Boolean,
+    default: true
   }
 }, {
   timestamps: true
 });
 
+recurringTransactionSchema.index({ userId: 1, isActive: 1 });
 
-transactionSchema.index({ userId: 1, date: -1 });
-transactionSchema.index({ userId: 1, type: 1 });
-transactionSchema.index({ userId: 1, categoryId: 1 });
-
-
-transactionSchema.virtual('formattedAmount').get(function() {
-  return this.amount.toFixed(2);
-});
-
-module.exports = mongoose.model('Transaction', transactionSchema);
+module.exports = mongoose.model('RecurringTransaction', recurringTransactionSchema);

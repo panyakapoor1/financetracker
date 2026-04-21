@@ -1,68 +1,67 @@
-# Finance Tracker SaaS Platform
+# Finance Tracker
 
-A secure, production-ready finance tracking application built with the MERN stack.
+A full-stack personal finance tracking application built with the MERN stack (MongoDB, Express, React, Node.js). Features a modern glassmorphism UI, real-time data persistence, and a comprehensive set of tools for managing your money.
 
-## 🚀 Features
+## Features
 
-- **Secure Authentication**: JWT-based auth with refresh tokens
-- **Transaction Management**: Track income and expenses
-- **Budget Tracking**: Set and monitor monthly budgets
-- **Analytics Dashboard**: Visual insights into spending patterns
-- **Reports**: Export data as CSV/PDF
-- **Role-based Access**: User and admin roles
+### Core
+- **Dashboard** — At-a-glance summary of income, expenses, balance, budget alerts, and recent transactions.
+- **Transactions** — Create, view, search, filter, and delete income/expense records. Supports filtering by type, category, and free-text search.
+- **Budgets** — Set monthly spending limits per category with visual progress bars that turn yellow at 80% and red when exceeded.
+- **Reports & Analytics** — Interactive charts (line, doughnut) powered by Chart.js showing income vs expense trends, spending by category, savings rate, and a detailed category breakdown table.
+- **CSV Export** — Download all your transaction data as a CSV file, with optional date range filtering.
 
-## 🛡️ Security Features
+### Advanced
+- **Recurring Transactions** — Automate tracking of regular bills and income (rent, subscriptions, salary). Set frequency (daily/weekly/monthly/yearly), pause/resume at any time.
+- **Savings Goals** — Set financial targets (emergency fund, vacation, new car) with custom icons, colors, deadlines, and a deposit/withdraw system to track progress.
+- **Transaction Search & Filters** — Instantly search transactions by category name, description, or amount. Filter by type (income/expense) and category.
 
+### Security
+- JWT-based authentication with refresh tokens
 - Password hashing with bcrypt
-- JWT token authentication
 - Input validation with Joi
-- Rate limiting
-- Helmet security headers
-- CORS protection
-- NoSQL injection prevention
-- XSS protection
+- Rate limiting, Helmet security headers, CORS protection
+- NoSQL injection prevention with express-mongo-sanitize
 
-## 📋 Prerequisites
+## Tech Stack
 
-- Node.js (v16 or higher)
-- MongoDB Atlas account
+| Layer | Technologies |
+|-------|-------------|
+| Frontend | React 18, TypeScript, Tailwind CSS, Chart.js, React Router, Redux Toolkit, Framer Motion, Lucide Icons |
+| Backend | Node.js, Express, Mongoose |
+| Database | MongoDB Atlas |
+| Auth | JWT (access + refresh tokens), bcrypt |
+
+## Getting Started
+
+### Prerequisites
+- Node.js v16+
+- A MongoDB Atlas cluster (free tier works fine)
 - npm or yarn
 
-## 🔧 Installation
+### 1. Clone & install
 
-### 1. Clone the repository
 ```bash
 git clone <repository-url>
 cd financetracker
-```
 
-### 2. Backend Setup
-```bash
+# Backend
 cd backend
 npm install
-cp .env.example .env
-# Edit .env with your MongoDB Atlas credentials
-npm run dev
-```
+cp .env.example .env   # then edit with your MongoDB URI and JWT secrets
 
-Backend runs on: http://localhost:5000
-
-### 3. Frontend Setup
-```bash
-cd frontend
+# Frontend
+cd ../frontend
 npm install
-npm start
 ```
 
-Frontend runs on: http://localhost:3000
+### 2. Configure environment variables
 
-## 🌍 Environment Variables
-
-### Backend (.env)
+**Backend** (`backend/.env`):
 ```
 NODE_ENV=development
 PORT=5000
-MONGODB_URI=your_mongodb_atlas_connection_string
+MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/finance-tracker
 JWT_SECRET=your_jwt_secret_key
 JWT_REFRESH_SECRET=your_jwt_refresh_secret
 JWT_EXPIRE=15m
@@ -70,113 +69,124 @@ JWT_REFRESH_EXPIRE=7d
 FRONTEND_URL=http://localhost:3000
 ```
 
-### Frontend (.env)
+**Frontend** (`frontend/.env`):
 ```
 REACT_APP_API_URL=http://localhost:5000/api
 ```
 
-## 📚 API Documentation
+### 3. Run
+
+```bash
+# Terminal 1 — Backend
+cd backend
+npm run dev        # starts on http://localhost:5000
+
+# Terminal 2 — Frontend
+cd frontend
+npm start          # starts on http://localhost:3000
+```
+
+## API Reference
 
 ### Authentication
-- POST `/api/auth/register` - Register new user
-- POST `/api/auth/login` - Login user
-- POST `/api/auth/refresh` - Refresh access token
-- POST `/api/auth/logout` - Logout user
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register a new user |
+| POST | `/api/auth/login` | Login |
+| POST | `/api/auth/refresh` | Refresh access token |
+| POST | `/api/auth/logout` | Logout |
 
 ### Transactions
-- GET `/api/transactions` - Get all transactions (paginated)
-- POST `/api/transactions` - Create transaction
-- GET `/api/transactions/:id` - Get transaction by ID
-- PUT `/api/transactions/:id` - Update transaction
-- DELETE `/api/transactions/:id` - Delete transaction
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/transactions` | List transactions (paginated, filterable) |
+| POST | `/api/transactions` | Create a transaction |
+| GET | `/api/transactions/:id` | Get a single transaction |
+| PUT | `/api/transactions/:id` | Update a transaction |
+| DELETE | `/api/transactions/:id` | Delete a transaction |
+| GET | `/api/transactions/stats/summary` | Get income/expense stats |
 
 ### Categories
-- GET `/api/categories` - Get all categories
-- POST `/api/categories` - Create category
-- PUT `/api/categories/:id` - Update category
-- DELETE `/api/categories/:id` - Delete category
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/categories` | List categories |
+| POST | `/api/categories` | Create a category |
+| PUT | `/api/categories/:id` | Update a category |
+| DELETE | `/api/categories/:id` | Delete a category |
 
 ### Budgets
-- GET `/api/budgets` - Get all budgets
-- POST `/api/budgets` - Create budget
-- GET `/api/budgets/:id` - Get budget by ID
-- PUT `/api/budgets/:id` - Update budget
-- DELETE `/api/budgets/:id` - Delete budget
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/budgets` | List budgets (filterable by month) |
+| POST | `/api/budgets` | Create a budget |
+| PUT | `/api/budgets/:id` | Update a budget |
+| DELETE | `/api/budgets/:id` | Delete a budget |
+| GET | `/api/budgets/alerts` | Get over-budget alerts |
 
-### Dashboard
-- GET `/api/dashboard/summary` - Get financial summary
-- GET `/api/dashboard/analytics` - Get analytics data
+### Recurring Transactions
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/recurring` | List recurring transactions |
+| POST | `/api/recurring` | Create a recurring transaction |
+| PUT | `/api/recurring/:id` | Update (or pause/resume) |
+| DELETE | `/api/recurring/:id` | Delete |
 
-### Reports
-- GET `/api/reports/csv` - Export as CSV
-- GET `/api/reports/pdf` - Export as PDF
+### Savings Goals
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/savings` | List savings goals |
+| POST | `/api/savings` | Create a goal |
+| PUT | `/api/savings/:id` | Update a goal |
+| DELETE | `/api/savings/:id` | Delete a goal |
+| POST | `/api/savings/:id/fund` | Deposit or withdraw funds |
 
-## 🧪 Testing with Postman
+### Dashboard & Reports
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/dashboard/summary` | Dashboard summary |
+| GET | `/api/dashboard/analytics` | Analytics (trends, category spending) |
+| GET | `/api/reports/csv` | Export transactions as CSV |
+| GET | `/api/reports/summary` | Report summary with savings rate |
+| GET | `/api/reports/income-expense` | Monthly income vs expense for a year |
 
-Import the Postman collection from `/postman/Finance-Tracker-API.postman_collection.json`
-
-Set environment variables:
-- `base_url`: http://localhost:5000/api
-- `token`: (will be set automatically after login)
-
-## 🚀 Deployment
-
-### Backend (Render/Railway)
-1. Create new web service
-2. Connect your repository
-3. Set environment variables
-4. Deploy
-
-### Frontend (Vercel/Netlify)
-1. Create new project
-2. Connect your repository
-3. Set build command: `cd frontend && npm run build`
-4. Set publish directory: `frontend/build`
-5. Set environment variables
-6. Deploy
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 financetracker/
 ├── backend/
 │   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── utils/
-│   │   └── validators/
-│   ├── server.js
+│   │   ├── controllers/       # Route handlers
+│   │   ├── middleware/         # Auth, error handling
+│   │   ├── models/             # Mongoose schemas
+│   │   ├── routes/             # Express route definitions
+│   │   └── utils/              # Helpers
+│   ├── server.js               # Express app entry point
 │   └── package.json
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── store/
-│   │   ├── types/
-│   │   └── utils/
+│   │   ├── components/         # Layout, PrivateRoute
+│   │   ├── pages/              # Dashboard, Transactions, Budgets, Reports, Recurring, SavingsGoals
+│   │   ├── services/           # API client and service modules
+│   │   ├── store/              # Redux store and slices
+│   │   └── types/              # TypeScript interfaces
 │   └── package.json
 └── README.md
 ```
 
-## 🔒 Security Best Practices
+## Deployment
 
-- Never commit `.env` files
-- Use strong JWT secrets
-- Implement rate limiting
-- Validate all inputs
-- Use HTTPS in production
-- Keep dependencies updated
-- Implement proper error handling
-- Use security headers
+### Backend (Render / Railway)
+1. Create a new web service and connect your repository.
+2. Set build command: `cd backend && npm install`
+3. Set start command: `cd backend && npm start`
+4. Add all environment variables from `.env`.
 
-## 📝 License
+### Frontend (Vercel / Netlify)
+1. Create a new project and connect your repository.
+2. Set build command: `cd frontend && npm run build`
+3. Set publish directory: `frontend/build`
+4. Set `REACT_APP_API_URL` to your deployed backend URL.
+
+## License
 
 MIT
-
-## 👥 Contributing
-
-Pull requests are welcome. For major changes, please open an issue first.

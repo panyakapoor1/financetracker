@@ -20,7 +20,7 @@ const getTransactions = asyncHandler(async (req, res) => {
     order = 'desc'
   } = req.query;
 
-  // Build query
+
   const query = { userId: req.user._id };
 
   if (type && ['income', 'expense'].includes(type)) {
@@ -37,11 +37,11 @@ const getTransactions = asyncHandler(async (req, res) => {
     if (endDate) query.date.$lte = new Date(endDate);
   }
 
-  // Pagination
+
   const skip = (parseInt(page) - 1) * parseInt(limit);
   const sortOrder = order === 'asc' ? 1 : -1;
 
-  // Execute query
+
   const transactions = await Transaction.find(query)
     .populate('categoryId', 'name icon color type')
     .sort({ [sortBy]: sortOrder })
@@ -78,7 +78,7 @@ const getTransaction = asyncHandler(async (req, res) => {
     throw new Error('Transaction not found');
   }
 
-  // Check ownership
+
   if (transaction.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
     res.status(403);
     throw new Error('Not authorized to access this transaction');
@@ -100,7 +100,7 @@ const getTransaction = asyncHandler(async (req, res) => {
 const createTransaction = asyncHandler(async (req, res) => {
   const { amount, type, categoryId, date, description } = req.body;
 
-  // Verify category exists and belongs to user or is default
+
   const category = await Category.findById(categoryId);
   if (!category) {
     res.status(404);
@@ -112,13 +112,13 @@ const createTransaction = asyncHandler(async (req, res) => {
     throw new Error('Not authorized to use this category');
   }
 
-  // Verify category type matches transaction type
+
   if (category.type !== type) {
     res.status(400);
     throw new Error(`Category type (${category.type}) does not match transaction type (${type})`);
   }
 
-  // Create transaction
+
   const transaction = await Transaction.create({
     userId: req.user._id,
     amount,
@@ -128,7 +128,7 @@ const createTransaction = asyncHandler(async (req, res) => {
     description
   });
 
-  // Update budget spent amount if it's an expense
+  // TODO: Maybe move this budget update logic into a separate background queue if it gets slow
   if (type === 'expense') {
     const transactionDate = new Date(transaction.date);
     const month = `${transactionDate.getFullYear()}-${String(transactionDate.getMonth() + 1).padStart(2, '0')}`;
@@ -170,7 +170,7 @@ const updateTransaction = asyncHandler(async (req, res) => {
     throw new Error('Transaction not found');
   }
 
-  // Check ownership
+
   if (transaction.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
     res.status(403);
     throw new Error('Not authorized to update this transaction');
@@ -178,7 +178,7 @@ const updateTransaction = asyncHandler(async (req, res) => {
 
   const { amount, type, categoryId, date, description } = req.body;
 
-  // If category is being updated, verify it
+
   if (categoryId && categoryId !== transaction.categoryId.toString()) {
     const category = await Category.findById(categoryId);
     if (!category) {
@@ -198,7 +198,7 @@ const updateTransaction = asyncHandler(async (req, res) => {
     }
   }
 
-  // Update budget if expense amount or category changed
+
   if (transaction.type === 'expense') {
     const oldDate = new Date(transaction.date);
     const oldMonth = `${oldDate.getFullYear()}-${String(oldDate.getMonth() + 1).padStart(2, '0')}`;
@@ -214,7 +214,7 @@ const updateTransaction = asyncHandler(async (req, res) => {
       await oldBudget.save();
     }
 
-    // Add to new budget
+
     const newDate = new Date(date || transaction.date);
     const newMonth = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}`;
     const newCategoryId = categoryId || transaction.categoryId;
@@ -232,7 +232,7 @@ const updateTransaction = asyncHandler(async (req, res) => {
     }
   }
 
-  // Update transaction
+
   transaction.amount = amount || transaction.amount;
   transaction.type = type || transaction.type;
   transaction.categoryId = categoryId || transaction.categoryId;
@@ -266,13 +266,13 @@ const deleteTransaction = asyncHandler(async (req, res) => {
     throw new Error('Transaction not found');
   }
 
-  // Check ownership
+
   if (transaction.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
     res.status(403);
     throw new Error('Not authorized to delete this transaction');
   }
 
-  // Update budget if expense
+
   if (transaction.type === 'expense') {
     const transactionDate = new Date(transaction.date);
     const month = `${transactionDate.getFullYear()}-${String(transactionDate.getMonth() + 1).padStart(2, '0')}`;

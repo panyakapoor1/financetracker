@@ -14,7 +14,7 @@ const getDashboardSummary = asyncHandler(async (req, res) => {
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
 
-  // Get total income and expenses for current month
+
   const monthlyStats = await Transaction.aggregate([
     {
       $match: {
@@ -37,7 +37,7 @@ const getDashboardSummary = asyncHandler(async (req, res) => {
   const income = monthlyStats.find(s => s._id === 'income') || { total: 0, count: 0 };
   const expense = monthlyStats.find(s => s._id === 'expense') || { total: 0, count: 0 };
 
-  // Get total all-time stats
+
   const allTimeStats = await Transaction.aggregate([
     {
       $match: {
@@ -55,13 +55,13 @@ const getDashboardSummary = asyncHandler(async (req, res) => {
   const allTimeIncome = allTimeStats.find(s => s._id === 'income') || { total: 0 };
   const allTimeExpense = allTimeStats.find(s => s._id === 'expense') || { total: 0 };
 
-  // Get recent transactions
+
   const recentTransactions = await Transaction.find({ userId: req.user._id })
     .populate('categoryId', 'name icon color type')
     .sort({ date: -1 })
     .limit(5);
 
-  // Get budget alerts
+
   const budgets = await Budget.find({
     userId: req.user._id,
     month: currentMonth
@@ -110,13 +110,13 @@ const getAnalytics = asyncHandler(async (req, res) => {
     if (startDate) matchStage.date.$gte = new Date(startDate);
     if (endDate) matchStage.date.$lte = new Date(endDate);
   } else {
-    // Default to last 6 months
+    // default 6m fallback
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
     matchStage.date = { $gte: sixMonthsAgo };
   }
 
-  // Category-wise spending
+
   const categorySpending = await Transaction.aggregate([
     { $match: { ...matchStage, type: 'expense' } },
     {
@@ -148,7 +148,7 @@ const getAnalytics = asyncHandler(async (req, res) => {
     { $sort: { total: -1 } }
   ]);
 
-  // Monthly income vs expense
+
   const monthlyTrends = await Transaction.aggregate([
     { $match: matchStage },
     {
@@ -164,7 +164,7 @@ const getAnalytics = asyncHandler(async (req, res) => {
     { $sort: { '_id.year': 1, '_id.month': 1 } }
   ]);
 
-  // Format monthly trends
+
   const formattedTrends = monthlyTrends.reduce((acc, item) => {
     const key = `${item._id.year}-${String(item._id.month).padStart(2, '0')}`;
     if (!acc[key]) {
@@ -174,7 +174,7 @@ const getAnalytics = asyncHandler(async (req, res) => {
     return acc;
   }, {});
 
-  // Income sources
+
   const incomeSources = await Transaction.aggregate([
     { $match: { ...matchStage, type: 'income' } },
     {

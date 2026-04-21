@@ -15,6 +15,9 @@ const categoryRoutes = require('./src/routes/categoryRoutes');
 const budgetRoutes = require('./src/routes/budgetRoutes');
 const dashboardRoutes = require('./src/routes/dashboardRoutes');
 const reportRoutes = require('./src/routes/reportRoutes');
+const recurringRoutes = require('./src/routes/recurringRoutes');
+const savingsRoutes = require('./src/routes/savingsRoutes');
+const achievementRoutes = require('./src/routes/achievementRoutes');
 
 // Import middleware
 const errorHandler = require('./src/middleware/errorHandler');
@@ -58,11 +61,11 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ MongoDB Atlas Connected Successfully'))
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/financetracker')
+  .then(() => console.log('✅ MongoDB Connected Successfully'))
   .catch((err) => {
-    console.error('❌ MongoDB Connection Error:', err.message);
-    process.exit(1);
+    console.error('❌ MongoDB Connection Error (Continuing without DB):', err.message);
+    // process.exit(1); // Commented out to allow frontend testing without DB
   });
 
 // Health check route
@@ -81,6 +84,9 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/recurring', recurringRoutes);
+app.use('/api/savings', savingsRoutes);
+app.use('/api/achievements', achievementRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

@@ -25,13 +25,13 @@ const exportCSV = asyncHandler(async (req, res) => {
     .populate('categoryId', 'name type')
     .sort({ date: -1 });
 
-  // Generate CSV
+
   const csvRows = [];
   
-  // Header
+
   csvRows.push('Date,Type,Category,Amount,Description');
 
-  // Data rows
+
   transactions.forEach(transaction => {
     const date = new Date(transaction.date).toISOString().split('T')[0];
     const type = transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1);
@@ -44,7 +44,7 @@ const exportCSV = asyncHandler(async (req, res) => {
 
   const csvContent = csvRows.join('\n');
 
-  // Set headers for file download
+
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', `attachment; filename=transactions_${Date.now()}.csv`);
   res.status(200).send(csvContent);
@@ -66,7 +66,7 @@ const getReportSummary = asyncHandler(async (req, res) => {
     if (endDate) matchStage.date.$lte = new Date(endDate);
   }
 
-  // Overall summary
+
   const overallStats = await Transaction.aggregate([
     { $match: matchStage },
     {
@@ -79,7 +79,7 @@ const getReportSummary = asyncHandler(async (req, res) => {
     }
   ]);
 
-  // Category breakdown
+
   const categoryBreakdown = await Transaction.aggregate([
     { $match: matchStage },
     {
@@ -112,7 +112,7 @@ const getReportSummary = asyncHandler(async (req, res) => {
     { $sort: { total: -1 } }
   ]);
 
-  // Monthly breakdown
+
   const monthlyBreakdown = await Transaction.aggregate([
     { $match: matchStage },
     {
@@ -193,7 +193,7 @@ const getIncomeExpenseReport = asyncHandler(async (req, res) => {
     { $sort: { '_id.month': 1 } }
   ]);
 
-  // Format data for 12 months
+
   const report = [];
   for (let month = 1; month <= 12; month++) {
     const monthName = new Date(currentYear, month - 1).toLocaleString('default', { month: 'long' });

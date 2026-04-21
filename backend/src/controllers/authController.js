@@ -11,14 +11,14 @@ const { generateAccessToken, generateRefreshToken, verifyToken } = require('../u
 const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  // Check if user already exists
+
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
     throw new Error('User already exists with this email');
   }
 
-  // Create user
+
   const user = await User.create({
     name,
     email,
@@ -30,7 +30,7 @@ const register = asyncHandler(async (req, res) => {
     throw new Error('Invalid user data');
   }
 
-  // Create default categories for the user
+
   const defaultCategories = Category.getDefaultCategories();
   const userCategories = defaultCategories.map(cat => ({
     ...cat,
@@ -38,11 +38,11 @@ const register = asyncHandler(async (req, res) => {
   }));
   await Category.insertMany(userCategories);
 
-  // Generate tokens
+
   const accessToken = generateAccessToken(user._id);
   const refreshToken = generateRefreshToken(user._id);
 
-  // Save refresh token to user
+
   user.refreshToken = refreshToken;
   await user.save();
 
@@ -70,31 +70,31 @@ const register = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Check if user exists
+
   const user = await User.findOne({ email }).select('+password');
   if (!user) {
     res.status(401);
     throw new Error('Invalid email or password');
   }
 
-  // Check if user is active
+
   if (!user.isActive) {
     res.status(401);
     throw new Error('Account is deactivated');
   }
 
-  // Verify password
+
   const isPasswordValid = await user.comparePassword(password);
   if (!isPasswordValid) {
     res.status(401);
     throw new Error('Invalid email or password');
   }
 
-  // Generate tokens
+
   const accessToken = generateAccessToken(user._id);
   const refreshToken = generateRefreshToken(user._id);
 
-  // Save refresh token
+
   user.refreshToken = refreshToken;
   await user.save();
 
@@ -127,21 +127,21 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new Error('Refresh token is required');
   }
 
-  // Verify refresh token
+
   const decoded = verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET);
   if (!decoded) {
     res.status(401);
     throw new Error('Invalid or expired refresh token');
   }
 
-  // Find user and verify refresh token
+
   const user = await User.findById(decoded.id).select('+refreshToken');
   if (!user || user.refreshToken !== refreshToken) {
     res.status(401);
     throw new Error('Invalid refresh token');
   }
 
-  // Generate new access token
+
   const newAccessToken = generateAccessToken(user._id);
 
   res.status(200).json({
@@ -158,7 +158,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const logout = asyncHandler(async (req, res) => {
-  // Remove refresh token from database
+
   req.user.refreshToken = null;
   await req.user.save();
 
@@ -226,14 +226,14 @@ const changePassword = asyncHandler(async (req, res) => {
 
   const user = await User.findById(req.user._id).select('+password');
 
-  // Verify current password
+
   const isPasswordValid = await user.comparePassword(currentPassword);
   if (!isPasswordValid) {
     res.status(401);
     throw new Error('Current password is incorrect');
   }
 
-  // Update password
+
   user.password = newPassword;
   await user.save();
 

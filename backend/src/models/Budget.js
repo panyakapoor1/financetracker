@@ -35,21 +35,21 @@ const budgetSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Compound unique index to prevent duplicate budgets
+
 budgetSchema.index({ userId: 1, categoryId: 1, month: 1 }, { unique: true });
 
-// Virtual for percentage used
+
 budgetSchema.virtual('percentageUsed').get(function() {
   if (this.limit === 0) return 0;
   return Math.min(Math.round((this.spent / this.limit) * 100), 100);
 });
 
-// Virtual for remaining amount
+
 budgetSchema.virtual('remaining').get(function() {
   return Math.max(this.limit - this.spent, 0);
 });
 
-// Virtual for status
+
 budgetSchema.virtual('status').get(function() {
   const percentage = this.percentageUsed;
   if (percentage >= 100) return 'exceeded';
@@ -57,7 +57,7 @@ budgetSchema.virtual('status').get(function() {
   return 'good';
 });
 
-// Ensure virtuals are included in JSON
+
 budgetSchema.set('toJSON', { virtuals: true });
 budgetSchema.set('toObject', { virtuals: true });
 

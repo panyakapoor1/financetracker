@@ -44,7 +44,7 @@ const getCategory = asyncHandler(async (req, res) => {
     throw new Error('Category not found');
   }
 
-  // Check access
+
   if (category.userId && category.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
     res.status(403);
     throw new Error('Not authorized to access this category');
@@ -66,7 +66,7 @@ const getCategory = asyncHandler(async (req, res) => {
 const createCategory = asyncHandler(async (req, res) => {
   const { name, type, icon, color } = req.body;
 
-  // Check if category name already exists for this user and type
+
   const existingCategory = await Category.findOne({
     userId: req.user._id,
     name: { $regex: new RegExp(`^${name}$`, 'i') },
@@ -109,7 +109,7 @@ const updateCategory = asyncHandler(async (req, res) => {
     throw new Error('Category not found');
   }
 
-  // Check ownership
+
   if (!category.userId || category.userId.toString() !== req.user._id.toString()) {
     res.status(403);
     throw new Error('Cannot modify default categories or categories you do not own');
@@ -117,7 +117,7 @@ const updateCategory = asyncHandler(async (req, res) => {
 
   const { name, icon, color } = req.body;
 
-  // If name is being updated, check for duplicates
+
   if (name && name !== category.name) {
     const existingCategory = await Category.findOne({
       userId: req.user._id,
@@ -160,13 +160,13 @@ const deleteCategory = asyncHandler(async (req, res) => {
     throw new Error('Category not found');
   }
 
-  // Check ownership
+
   if (!category.userId || category.userId.toString() !== req.user._id.toString()) {
     res.status(403);
     throw new Error('Cannot delete default categories or categories you do not own');
   }
 
-  // Check if category is being used in transactions
+
   const transactionCount = await Transaction.countDocuments({
     categoryId: category._id
   });
@@ -199,7 +199,7 @@ const getCategoryStats = asyncHandler(async (req, res) => {
     throw new Error('Category not found');
   }
 
-  // Check access
+
   if (category.userId && category.userId.toString() !== req.user._id.toString()) {
     res.status(403);
     throw new Error('Not authorized to access this category');

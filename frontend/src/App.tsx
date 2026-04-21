@@ -8,28 +8,13 @@ import Layout from './components/layout/Layout';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Dashboard from './pages/Dashboard';
-
-// Placeholder components for routes
-const Transactions = () => (
-  <div className="bg-white rounded-lg shadow-md p-6">
-    <h2 className="text-2xl font-bold mb-4">Transactions</h2>
-    <p className="text-gray-600">Transaction management coming soon...</p>
-  </div>
-);
-
-const Budgets = () => (
-  <div className="bg-white rounded-lg shadow-md p-6">
-    <h2 className="text-2xl font-bold mb-4">Budgets</h2>
-    <p className="text-gray-600">Budget management coming soon...</p>
-  </div>
-);
-
-const Reports = () => (
-  <div className="bg-white rounded-lg shadow-md p-6">
-    <h2 className="text-2xl font-bold mb-4">Reports</h2>
-    <p className="text-gray-600">Reports coming soon...</p>
-  </div>
-);
+import Transactions from './pages/Transactions';
+import Budgets from './pages/Budgets';
+import Reports from './pages/Reports';
+import RecurringTransactions from './pages/RecurringTransactions';
+import SavingsGoals from './pages/SavingsGoals';
+import CalendarView from './pages/Calendar';
+import Achievements from './pages/Achievements';
 
 function App() {
   return (
@@ -40,87 +25,43 @@ function App() {
           toastOptions={{
             duration: 3000,
             style: {
-              background: '#363636',
+              background: 'rgba(30, 41, 59, 0.8)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               color: '#fff',
             },
             success: {
-              duration: 3000,
-              iconTheme: {
-                primary: '#10b981',
-                secondary: '#fff',
-              },
+              iconTheme: { primary: '#10b981', secondary: '#fff' },
             },
             error: {
-              duration: 4000,
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#fff',
-              },
+              iconTheme: { primary: '#ef4444', secondary: '#fff' },
             },
           }}
         />
         <Routes>
-          {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <Dashboard />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/transactions"
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <Transactions />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/budgets"
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <Budgets />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/reports"
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <Reports />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
+          <Route path="/dashboard" element={<PrivateRoute><Layout><Dashboard /></Layout></PrivateRoute>} />
+          <Route path="/transactions" element={<PrivateRoute><Layout><Transactions /></Layout></PrivateRoute>} />
+          <Route path="/budgets" element={<PrivateRoute><Layout><Budgets /></Layout></PrivateRoute>} />
+          <Route path="/reports" element={<PrivateRoute><Layout><Reports /></Layout></PrivateRoute>} />
+          <Route path="/recurring" element={<PrivateRoute><Layout><RecurringTransactions /></Layout></PrivateRoute>} />
+          <Route path="/calendar" element={<PrivateRoute><Layout><CalendarView /></Layout></PrivateRoute>} />
+          <Route path="/savings" element={<PrivateRoute><Layout><SavingsGoals /></Layout></PrivateRoute>} />
+          <Route path="/achievements" element={<PrivateRoute><Layout><Achievements /></Layout></PrivateRoute>} />
 
-          {/* Redirect root to dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* 404 */}
           <Route
             path="*"
             element={
-              <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center">
-                  <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
-                  <p className="text-xl text-gray-600 mb-8">Page not found</p>
-                  <a
-                    href="/dashboard"
-                    className="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700"
-                  >
+              <div className="min-h-screen flex items-center justify-center bg-background text-white">
+                <div className="text-center glass-panel p-12 rounded-3xl">
+                  <h1 className="text-7xl font-bold text-primary-500 mb-4 drop-shadow-lg">404</h1>
+                  <p className="text-xl text-white/60 mb-8">Page not found</p>
+                  <a href="/dashboard" className="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-500 transition-colors">
                     Go to Dashboard
                   </a>
                 </div>

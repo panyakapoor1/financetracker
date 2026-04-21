@@ -8,22 +8,22 @@ const User = require('../models/User');
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
-  // Check for token in Authorization header
+
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   }
 
-  // Check if token exists
+
   if (!token) {
     res.status(401);
     throw new Error('Not authorized, no token provided');
   }
 
   try {
-    // Verify token
+    // Verify JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Get user from token
+
     req.user = await User.findById(decoded.id).select('-password -refreshToken');
 
     if (!req.user) {
@@ -79,7 +79,7 @@ const checkOwnership = (resourceUserIdField = 'userId') => {
       return next();
     }
 
-    // Check if user owns the resource
+
     const resourceUserId = resource[resourceUserIdField];
     if (!resourceUserId || resourceUserId.toString() !== req.user._id.toString()) {
       res.status(403);
