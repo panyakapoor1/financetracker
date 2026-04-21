@@ -1,6 +1,12 @@
 # Finance Tracker
 
+[![CI/CD Pipeline](https://github.com/panyakapoor1/financetracker/actions/workflows/deploy.yml/badge.svg)](https://github.com/panyakapoor1/financetracker/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/github/license/panyakapoor1/financetracker)](https://github.com/panyakapoor1/financetracker/blob/main/LICENSE)
+[![Live Demo](https://img.shields.io/badge/demo-live-success.svg)](https://panyakapoor1.github.io/financetracker/)
+
 A full-stack personal finance tracking application built with the MERN stack (MongoDB, Express, React, Node.js). Features a modern glassmorphism UI, real-time data persistence, and a comprehensive set of tools for managing your money.
+
+[**Live Demo**](https://panyakapoor1.github.io/financetracker/) | [**Documentation**](DEPLOYMENT.md)
 
 ## Features
 
@@ -43,7 +49,7 @@ A full-stack personal finance tracking application built with the MERN stack (Mo
 ### 1. Clone & install
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/panyakapoor1/financetracker.git
 cd financetracker
 
 # Backend
@@ -182,17 +188,14 @@ financetracker/
 
 ## Deployment
 
-### Backend (Render / Railway)
-1. Create a new web service and connect your repository.
-2. Set build command: `cd backend && npm install`
-3. Set start command: `cd backend && npm start`
-4. Add all environment variables from `.env`.
+This project is configured for **Automated CI/CD** via GitHub Actions.
 
-### Frontend (Vercel / Netlify)
-1. Create a new project and connect your repository.
-2. Set build command: `cd frontend && npm run build`
-3. Set publish directory: `frontend/build`
-4. Set `REACT_APP_API_URL` to your deployed backend URL.
+### Automated Deployment (Recommended)
+Every push to the `main` branch automatically:
+1. Builds the frontend and deploys it to **GitHub Pages**.
+2. Triggers a redeploy of the backend (if `RENDER_DEPLOY_HOOK` secret is set).
+
+See the [Deployment Guide](DEPLOYMENT.md) for setup instructions.
 
 ## License
 

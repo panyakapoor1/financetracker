@@ -5,25 +5,47 @@ This guide covers deploying the Finance Tracker application to various cloud pla
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
-2. [Backend Deployment](#backend-deployment)
-   - [Render](#deploy-backend-to-render)
-   - [Railway](#deploy-backend-to-railway)
-   - [Heroku](#deploy-backend-to-heroku)
-3. [Frontend Deployment](#frontend-deployment)
-   - [Vercel](#deploy-frontend-to-vercel)
-   - [Netlify](#deploy-frontend-to-netlify)
-4. [MongoDB Atlas Setup](#mongodb-atlas-setup)
-5. [Environment Variables](#environment-variables)
-6. [Post-Deployment](#post-deployment)
+2. [Automated Deployment (GitHub Actions)](#automated-deployment-github-actions)
+3. [Backend Deployment](#backend-deployment)
+4. [Frontend Deployment](#frontend-deployment)
+5. [MongoDB Atlas Setup](#mongodb-atlas-setup)
+6. [Environment Variables](#environment-variables)
+7. [Post-Deployment](#post-deployment)
 
 ---
 
 ## Prerequisites
 
-- Git repository with your code
+- Git repository: [https://github.com/panyakapoor1/financetracker](https://github.com/panyakapoor1/financetracker)
 - MongoDB Atlas account
 - Accounts on deployment platforms (Render, Vercel, etc.)
 - Domain name (optional)
+
+---
+
+## Automated Deployment (GitHub Actions)
+
+This is the **highly recommended** way to deploy. Once set up, your app will automatically deploy every time you push to the `main` branch.
+
+### 1. Configure GitHub Secrets
+Go to your GitHub repository **Settings > Secrets and variables > Actions** and add:
+
+| Secret Name | Description | Example |
+|-------------|-------------|---------|
+| `REACT_APP_API_URL` | Your deployed backend API URL | `https://api.yourapp.com/api` |
+| `RENDER_DEPLOY_HOOK` | (Optional) Your Render Deploy Hook URL | `https://api.render.com/deploy/...` |
+
+### 2. Enable GitHub Pages
+1. Go to your GitHub repository **Settings > Pages**.
+2. Under **Build and deployment > Source**, select **GitHub Actions**.
+
+### 3. Push to Main
+Simply push your changes to the `main` branch to trigger the deployment:
+```bash
+git add .
+git commit -m "Update application"
+git push origin main
+```
 
 ---
 

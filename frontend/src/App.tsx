@@ -19,7 +19,7 @@ import Achievements from './pages/Achievements';
 function App() {
   return (
     <Provider store={store}>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Toaster
           position="top-right"
           toastOptions={{
