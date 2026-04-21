@@ -1,146 +1,38 @@
-# Deployment Guide
-
-This guide covers deploying the Finance Tracker application to various cloud platforms.
-
-## Table of Contents
-
-1. [Prerequisites](#prerequisites)
-2. [Automated Deployment (GitHub Actions)](#automated-deployment-github-actions)
-3. [Backend Deployment](#backend-deployment)
-4. [Frontend Deployment](#frontend-deployment)
-5. [MongoDB Atlas Setup](#mongodb-atlas-setup)
-6. [Environment Variables](#environment-variables)
-7. [Post-Deployment](#post-deployment)
-
 ---
 
-## Prerequisites
+## 🚀 3-Step Automated Setup (Recommended)
 
-- Git repository: [https://github.com/panyakapoor1/financetracker](https://github.com/panyakapoor1/financetracker)
-- MongoDB Atlas account
-- Accounts on deployment platforms (Render, Vercel, etc.)
-- Domain name (optional)
+This project is designed to be managed entirely via **GitHub Actions**. Follow these 3 steps to set up your free hosting.
 
----
-
-## Automated Deployment (GitHub Actions)
-
-This is the **highly recommended** way to deploy. Once set up, your app will automatically deploy every time you push to the `main` branch.
-
-### 1. Configure GitHub Secrets
-Go to your GitHub repository **Settings > Secrets and variables > Actions** and add:
-
-| Secret Name | Description | Example |
-|-------------|-------------|---------|
-| `REACT_APP_API_URL` | Your deployed backend API URL | `https://api.yourapp.com/api` |
-| `RENDER_DEPLOY_HOOK` | (Optional) Your Render Deploy Hook URL | `https://api.render.com/deploy/...` |
-
-### 2. Enable GitHub Pages
-1. Go to your GitHub repository **Settings > Pages**.
-2. Under **Build and deployment > Source**, select **GitHub Actions**.
-
-### 3. Push to Main
-Simply push your changes to the `main` branch to trigger the deployment:
-```bash
-git add .
-git commit -m "Update application"
-git push origin main
-```
-
----
-
-## MongoDB Atlas Setup
-
-### 1. Create a Cluster
-
-1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Sign up or log in
-3. Create a new cluster (free M0 tier available)
-4. Choose a cloud provider and region
-5. Wait for cluster creation (2-5 minutes)
-
-### 2. Configure Database Access
-
-1. Go to **Database Access**
-2. Add a new database user
-3. Choose **Password** authentication
-4. Set username and password (save these securely)
-5. Set user privileges to **Atlas Admin** or **Read and write to any database**
-
-### 3. Configure Network Access
-
-1. Go to **Network Access**
-2. Click **Add IP Address**
-3. Choose **Allow Access from Anywhere** (`0.0.0.0/0`)
-   - For production, restrict to specific IPs
-4. Confirm
-
-### 4. Get Connection String
-
-1. Go to your cluster
-2. Click **Connect**
-3. Choose **Connect your application**
-4. Copy the connection string
-5. Replace `<password>` with your database user password
-6. Replace `<dbname>` with your database name (e.g., `financetracker`)
-
-Example:
-```
-mongodb+srv://username:password@cluster.mongodb.net/financetracker?retryWrites=true&w=majority
-```
-
----
-
-## Backend Deployment
-
-### Deploy Backend to Render
-
-#### 1. Prepare Your Repository
-
-Ensure `package.json` has the correct start script:
-```json
-{
-  "scripts": {
-    "start": "node server.js"
-  }
-}
-```
-
-#### 2. Create Web Service
-
-1. Go to [Render Dashboard](https://dashboard.render.com/)
-2. Click **New** → **Web Service**
-3. Connect your GitHub/GitLab repository
-4. Configure:
-   - **Name**: `finance-tracker-api`
+### 1. Host the Backend (Render Free)
+1. Create a free account at [Render.com](https://dashboard.render.com/).
+2. Click **New +** > **Web Service** and connect this GitHub repository.
+3. Configure:
    - **Root Directory**: `backend`
-   - **Environment**: `Node`
-   - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-   - **Plan**: Free
+4. In Render Settings, find the **Deploy Hook** URL and copy it.
 
-#### 3. Add Environment Variables
+### 2. Host the Frontend (GitHub Pages)
+1. In your GitHub repository, go to **Settings** > **Pages**.
+2. Under **Build and deployment** > **Source**, select **GitHub Actions**.
 
-In the Render dashboard, add:
+### 3. Link everything in GitHub Secrets
+Go to your GitHub repository **Settings** > **Secrets and variables** > **Actions** and add these two secrets:
 
-```env
-NODE_ENV=production
-PORT=5000
-MONGODB_URI=your_mongodb_atlas_connection_string
-JWT_SECRET=your_super_secret_jwt_key_min_32_characters
-JWT_REFRESH_SECRET=your_super_secret_refresh_key_min_32_characters
-JWT_EXPIRE=15m
-JWT_REFRESH_EXPIRE=7d
-FRONTEND_URL=your_frontend_url
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
-```
+| Secret Name | Value |
+|-------------|-------|
+| `REACT_APP_API_URL` | Your Render URL + `/api` (e.g., `https://my-app.onrender.com/api`) |
+| `RENDER_DEPLOY_HOOK` | The **Deploy Hook** URL you copied from Render |
 
-#### 4. Deploy
+---
 
-1. Click **Create Web Service**
-2. Wait for deployment (2-5 minutes)
-3. Your API will be available at: `https://finance-tracker-api.onrender.com`
+## 🛠️ Environment Variables Reference
+
+| Variable | Description |
+|----------|-------------|
+| `MONGODB_URI` | Your MongoDB Atlas connection string |
+| `JWT_SECRET` | Secret key for auth (min 32 chars) |
+| `FRONTEND_URL` | Your GitHub Pages URL (e.g., `https://user.github.io/repo`) |
 
 ---
 

@@ -6,7 +6,14 @@
 
 A full-stack personal finance tracking application built with the MERN stack (MongoDB, Express, React, Node.js). Features a modern glassmorphism UI, real-time data persistence, and a comprehensive set of tools for managing your money.
 
-[**Live Demo**](https://panyakapoor1.github.io/financetracker/) | [**Documentation**](DEPLOYMENT.md)
+[**Live Demo**](https://panyakapoor1.github.io/financetracker/) | [**Platform Status**](https://github.com/panyakapoor1/financetracker/actions) | [**Setup Guide**](DEPLOYMENT.md)
+
+## 🚀 Automation & CI/CD
+
+This project uses **GitHub Actions** for 100% automated deployment:
+- **Frontend**: Automatically built and deployed to **GitHub Pages**.
+- **Backend**: Automatically triggered to redeploy on **Render** via webhooks.
+- **Security**: Automated vulnerability scanning on every push.
 
 ## Features
 

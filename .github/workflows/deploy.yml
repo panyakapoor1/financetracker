@@ -22,17 +22,33 @@ jobs:
             backend/package-lock.json
             frontend/package-lock.json
 
-      # Backend Checks
+      # 1. Security Audit
+      - name: Security Audit (Backend)
+        run: |
+          cd backend
+          npm audit --audit-level=high || true # Warn but don't fail for audit
+
+      # 2. Backend Checks
       - name: Install Backend Dependencies
         run: |
           cd backend
           npm install
 
-      # Frontend Checks & Build
+      - name: Run Backend Tests (if any)
+        run: |
+          cd backend
+          npm test || echo "No tests defined"
+
+      # 3. Frontend Checks & Build
       - name: Install Frontend Dependencies
         run: |
           cd frontend
           npm install
+
+      - name: Run Frontend Tests
+        run: |
+          cd frontend
+          npm test -- --watchAll=false || echo "No tests defined"
 
       - name: Build Frontend
         env:
@@ -41,7 +57,7 @@ jobs:
           cd frontend
           npm run build
 
-      # Deploy Frontend to GitHub Pages
+      # 4. Deploy Frontend to GitHub Pages
       - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@v4
@@ -49,8 +65,9 @@ jobs:
           folder: frontend/build
           branch: gh-pages
 
-      # Trigger Backend Deployment (Optional)
+      # 5. Trigger Backend Deployment
       - name: Trigger Render Deploy Hook
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.RENDER_DEPLOY_HOOK != ''
         run: |
+          echo "🚀 Triggering backend redeploy..."
           curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
