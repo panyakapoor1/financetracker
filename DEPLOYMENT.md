@@ -21,7 +21,7 @@ Go to your GitHub repository **Settings** > **Secrets and variables** > **Action
 
 | Secret Name | Value |
 |-------------|-------|
-| `REACT_APP_API_URL` | Your Render URL + `/api` (e.g., `https://my-app.onrender.com/api`) |
+| `REACT_APP_API_URL` | `https://finance-tracker-api-fhdr.onrender.com/api` |
 | `RENDER_DEPLOY_HOOK` | The **Deploy Hook** URL you copied from Render |
 
 ---
