@@ -18,6 +18,7 @@ This project uses **GitHub Actions** for 100% automated deployment:
 ## Features
 
 ### Core
+- **Landing Page** — A visually stunning product overview page with Framer Motion animations.
 - **Dashboard** — At-a-glance summary of income, expenses, balance, budget alerts, and recent transactions.
 - **Transactions** — Create, view, search, filter, and delete income/expense records. Supports filtering by type, category, and free-text search.
 - **Budgets** — Set monthly spending limits per category with visual progress bars that turn yellow at 80% and red when exceeded.
@@ -29,6 +30,7 @@ This project uses **GitHub Actions** for 100% automated deployment:
 - **Savings Goals** — Set financial targets (emergency fund, vacation, new car) with custom icons, colors, deadlines, and a deposit/withdraw system to track progress.
 - **Achievements** — Gamified experience with unlockable badges (e.g., "100 Club", "Budget Master") based on your financial milestones and habits.
 - **Transaction Search & Filters** — Instantly search transactions by category name, description, or amount. Filter by type (income/expense) and category.
+- **Google OAuth** — Quick and secure sign-in/registration using Google accounts.
 
 ### Security
 - JWT-based authentication with refresh tokens
@@ -44,7 +46,7 @@ This project uses **GitHub Actions** for 100% automated deployment:
 | Frontend | React 18, TypeScript, Tailwind CSS, Chart.js, React Router, Redux Toolkit, Framer Motion, Lucide Icons |
 | Backend | Node.js, Express, Mongoose |
 | Database | MongoDB Atlas |
-| Auth | JWT (access + refresh tokens), bcrypt |
+| Auth | JWT (access + refresh tokens), bcrypt, Google OAuth 2.0 |
 
 ## Getting Started
 
@@ -81,11 +83,13 @@ JWT_REFRESH_SECRET=your_jwt_refresh_secret
 JWT_EXPIRE=15m
 JWT_REFRESH_EXPIRE=7d
 FRONTEND_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=your_google_client_id
 ```
 
 **Frontend** (`frontend/.env`):
 ```
 REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id
 ```
 
 ### 3. Run
@@ -109,6 +113,7 @@ npm start          # starts on http://localhost:3000
 | POST | `/api/auth/login` | Login |
 | POST | `/api/auth/refresh` | Refresh access token |
 | POST | `/api/auth/logout` | Logout |
+| POST | `/api/auth/google` | Login or Register with Google |
 
 ### Transactions
 | Method | Endpoint | Description |
