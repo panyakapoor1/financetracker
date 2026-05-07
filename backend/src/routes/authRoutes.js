@@ -7,7 +7,8 @@ const {
   logout,
   getMe,
   updateProfile,
-  changePassword
+  changePassword,
+  googleLogin
 } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 const { validate, schemas } = require('../middleware/validator');
@@ -15,6 +16,7 @@ const { validate, schemas } = require('../middleware/validator');
 // Public routes
 router.post('/register', validate(schemas.register), register);
 router.post('/login', validate(schemas.login), login);
+router.post('/google', googleLogin);
 router.post('/refresh', refreshAccessToken);
 
 // Protected routes

@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://panyakapoor1.github.io/financetracker/",
   "dependencies": {
+    "@react-oauth/google": "^0.13.5",
     "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.6.2",
     "chart.js": "^4.4.1",

@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { UserPlus } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 import { authService } from '../../services/authService';
 import { setUser } from '../../store/slices/authSlice';
 import { RegisterCredentials } from '../../types';
@@ -12,6 +13,20 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    setLoading(true);
+    try {
+      const response = await authService.googleLogin(credentialResponse.credential);
+      dispatch(setUser(response.data.user));
+      toast.success('Login successful!');
+      navigate('/dashboard');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Google login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const {
     register,
@@ -147,6 +162,28 @@ const Register: React.FC = () => {
             {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
+
+        <div className="mt-6">
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-background text-white/40">Or continue with</span>
+            </div>
+          </div>
+
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error('Google login failed')}
+              theme="filled_black"
+              shape="pill"
+              text="signup_with"
+              width="100%"
+            />
+          </div>
+        </div>
 
         <div className="mt-8 text-center">
           <p className="text-sm text-white/60">

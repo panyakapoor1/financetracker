@@ -1,7 +1,10 @@
 const asyncHandler = require('express-async-handler');
+const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 const Category = require('../models/Category');
 const { generateAccessToken, generateRefreshToken, verifyToken } = require('../utils/jwtUtils');
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 /**
  * @desc    Register a new user
@@ -243,6 +246,79 @@ const changePassword = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * @desc    Login or Register with Google
+ * @route   POST /api/auth/google
+ * @access  Public
+ */
+const googleLogin = asyncHandler(async (req, res) => {
+  const { idToken } = req.body;
+
+  if (!idToken) {
+    res.status(400);
+    throw new Error('Google ID Token is required');
+  }
+
+  const ticket = await client.verifyIdToken({
+    idToken,
+    audience: process.env.GOOGLE_CLIENT_ID
+  });
+
+  const payload = ticket.getPayload();
+  const { sub: googleId, email, name, picture } = payload;
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    // Create new user if they don't exist
+    user = await User.create({
+      name,
+      email,
+      googleId,
+      // No password needed for Google users
+    });
+
+    // Initialize default categories for new Google user
+    const defaultCategories = Category.getDefaultCategories();
+    const userCategories = defaultCategories.map(cat => ({
+      ...cat,
+      userId: user._id
+    }));
+    await Category.insertMany(userCategories);
+  } else if (!user.googleId) {
+    // Link Google account to existing user if not already linked
+    user.googleId = googleId;
+    await user.save();
+  }
+
+  if (!user.isActive) {
+    res.status(401);
+    throw new Error('Account is deactivated');
+  }
+
+  const accessToken = generateAccessToken(user._id);
+  const refreshToken = generateRefreshToken(user._id);
+
+  user.refreshToken = refreshToken;
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Google login successful',
+    data: {
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        picture
+      },
+      accessToken,
+      refreshToken
+    }
+  });
+});
+
 module.exports = {
   register,
   login,
@@ -250,5 +326,6 @@ module.exports = {
   logout,
   getMe,
   updateProfile,
-  changePassword
+  changePassword,
+  googleLogin
 };
