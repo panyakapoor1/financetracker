@@ -59,6 +59,7 @@ jobs:
       - name: Build Frontend
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
           CI: false
         run: |
           cd frontend
