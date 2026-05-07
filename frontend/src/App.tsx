@@ -15,6 +15,7 @@ import RecurringTransactions from './pages/RecurringTransactions';
 import SavingsGoals from './pages/SavingsGoals';
 import CalendarView from './pages/Calendar';
 import Achievements from './pages/Achievements';
+import Landing from './pages/Landing';
 
 function App() {
   return (
@@ -34,11 +35,12 @@ function App() {
               iconTheme: { primary: '#10b981', secondary: '#fff' },
             },
             error: {
-              iconTheme: { primary: '#ef4444', secondary: '#fff' },
+              iconTheme: { primary: '#60a5fa', secondary: '#fff' },
             },
           }}
         />
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -52,7 +54,7 @@ function App() {
           <Route path="/savings" element={<PrivateRoute><Layout><SavingsGoals /></Layout></PrivateRoute>} />
           <Route path="/achievements" element={<PrivateRoute><Layout><Achievements /></Layout></PrivateRoute>} />
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          {/* Fallback route - Redirect back to root if logged out, or to dashboard if logged in handled by PrivateRoute logic if we wanted, but for now just root or 404 */}
 
           <Route
             path="*"
